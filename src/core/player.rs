@@ -1,7 +1,7 @@
 use std::f64::consts::PI;
 use macroquad::prelude::*;
 
-struct Player{
+pub struct Player{
     x: f64,
     y: f64,
     rad: f64,
@@ -10,7 +10,7 @@ struct Player{
 }
 
 impl Player{
-    fn new(x: f64, y: f64, rad: f64) -> Player{
+    pub fn new(x: f64, y: f64, rad: f64) -> Player{
         Player{
             x, 
             y, 
@@ -21,16 +21,16 @@ impl Player{
     }
 
     pub fn turn_left(&mut self){
-        self.rad -= turn_speed;
-        if(self.rad < 0){
-            self.rad += 2 * PI;
+        self.rad -= self.turn_speed;
+        if self.rad < 0.0 {
+            self.rad += 2.0 * PI;
         }
     }
 
     pub fn turn_right(&mut self){
         self.rad += self.turn_speed;
-        if(self.rad >= 2 * PI){
-            self.rad -= 2 * PI;
+        if self.rad >= 2.0 * PI {
+            self.rad -= 2.0 * PI;
         }
     }
 
@@ -45,9 +45,9 @@ impl Player{
     }
 
     pub fn update(&mut self){
-        if(key_is_down(KeyCode::W)){self.move_forward()}
-        if(key_is_down(KeyCode::A)){self.turn_left()}
-        if(key_is_down(KeyCode::S)){self.move_backwards()}
-        if(key_is_down(KeyCode::D)){self.turn_right()}
+        if(is_key_down(KeyCode::W)){self.move_forward();}
+        if(is_key_down(KeyCode::A)){self.turn_left();}
+        if(is_key_down(KeyCode::S)){self.move_backwards();}
+        if(is_key_down(KeyCode::D)){self.turn_right();}
     }
 }
