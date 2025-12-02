@@ -2,9 +2,9 @@ use std::f64::consts::PI;
 use macroquad::prelude::*;
 
 pub struct Player{
-    x: f64,
-    y: f64,
-    rad: f64,
+    pub x: f64,
+    pub y: f64,
+    pub rad: f64,
     move_speed: f64,
     turn_speed: f64,
 }
@@ -15,8 +15,8 @@ impl Player{
             x, 
             y, 
             rad,
-            move_speed: 0.1,
-            turn_speed: 0.1,
+            move_speed: 1.0,
+            turn_speed: 0.05,
         }
     }
 
@@ -45,9 +45,19 @@ impl Player{
     }
 
     pub fn update(&mut self){
-        if(is_key_down(KeyCode::W)){self.move_forward();}
-        if(is_key_down(KeyCode::A)){self.turn_left();}
-        if(is_key_down(KeyCode::S)){self.move_backwards();}
-        if(is_key_down(KeyCode::D)){self.turn_right();}
+        if is_key_down(KeyCode::W) {self.move_forward();}
+        if is_key_down(KeyCode::A) {self.turn_left();}
+        if is_key_down(KeyCode::S) {self.move_backwards();}
+        if is_key_down(KeyCode::D) {self.turn_right();}
+    }
+
+    pub fn draw_player(&self, radius: f32, color: Color) {
+        draw_circle(self.x as f32, self.y as f32, radius, color);
+
+        let line_length: f32 = radius;
+        let x2: f32 = self.x as f32 + (self.rad as f32).cos() * line_length;
+        let y2: f32 = self.y as f32 + (self.rad as f32).sin() * line_length;
+
+        draw_line(self.x as f32, self.y as f32, x2, y2, 3.0, Color { r: (0.0), g: (0.0), b: (0.0), a: (255.0) });
     }
 }
