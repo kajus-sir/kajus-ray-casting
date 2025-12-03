@@ -1,6 +1,7 @@
 use std::f64::consts::PI;
 use macroquad::prelude::*;
 
+use crate::core::map::Map;
 pub struct Player{
     pub x: f64,
     pub y: f64,
@@ -35,19 +36,22 @@ impl Player{
     }
 
     pub fn move_forward(&mut self){
-        self.x += self.rad.cos() * self.move_speed;
-        self.y += self.rad.sin() * self.move_speed;
-    }
 
-    pub fn move_backwards(&mut self){
-        self.x -= self.rad.cos() * self.move_speed;
-        self.y -= self.rad.sin() * self.move_speed;
+        let new_x = self.x + self.rad.cos() * self.move_speed;
+        let new_y =   self.y + self.rad.sin() * self.move_speed;
+
+        let tile_x = (new_x / 64.0) as usize;
+        let tile_y = (new_y / 64.0) as usize;
+
+        if !Map::is_wall(tile_x, tile_y){
+            self.x = new_x;
+            self.y = new_y;
+        }
     }
 
     pub fn update(&mut self){
         if is_key_down(KeyCode::W) {self.move_forward();}
         if is_key_down(KeyCode::A) {self.turn_left();}
-        if is_key_down(KeyCode::S) {self.move_backwards();}
         if is_key_down(KeyCode::D) {self.turn_right();}
     }
 
