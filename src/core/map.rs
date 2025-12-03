@@ -17,7 +17,7 @@ impl Map{
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
-    const TILE_SIZE: f64 = 64.0;
+    pub const TILE_SIZE: f32 = 64.0;
 
     pub fn is_wall(x: usize, y: usize) -> bool{
         if x >= 10 || y >= 10 {

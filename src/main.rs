@@ -15,7 +15,7 @@ fn window_conf() -> Conf{
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut player = Player::new(100.0, 100.0, 0.0);
+    let mut player = Player::new(vec2(100.0,100.0));
 
     let background_color = Color::new(1.0, 1.0, 1.0, 1.0);
     let circle_color= Color::new(255.0, 0.0, 0.0, 255.0);

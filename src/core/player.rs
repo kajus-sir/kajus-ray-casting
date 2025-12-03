@@ -1,67 +1,63 @@
-use std::f64::consts::PI;
 use macroquad::prelude::*;
 
 use crate::core::map::Map;
 pub struct Player{
-    pub x: f64,
-    pub y: f64,
-    pub rad: f64,
-    move_speed: f64,
-    turn_speed: f64,
+    pub pos: Vec2,
+    pub dir: Vec2,
+    pub fov: f32,
+
+    move_speed: f32,
+    turn_speed: f32,
 }
 
 impl Player{
-    pub fn new(x: f64, y: f64, rad: f64) -> Player{
+    pub fn new(pos: Vec2) -> Player{
         Player{
-            x, 
-            y, 
-            rad,
-            move_speed: 1.0,
-            turn_speed: 0.05,
+            pos, 
+            dir: vec2(1.0,0.0),
+            fov: 60f32.to_radians(),
+            move_speed: 2.0,
+            turn_speed: 0.1,
         }
     }
 
-    pub fn turn_left(&mut self){
-        self.rad -= self.turn_speed;
-        if self.rad < 0.0 {
-            self.rad += 2.0 * PI;
-        }
-    }
+    pub fn rotate(&mut self, p_dir: Vec2, angle:f32){
+        let cos = angle.cos();
+        let sin = angle.sin();
 
-    pub fn turn_right(&mut self){
-        self.rad += self.turn_speed;
-        if self.rad >= 2.0 * PI {
-            self.rad -= 2.0 * PI;
-        }
+        let new_dir = vec2(
+            p_dir.x * cos - p_dir.y * sin,
+            p_dir.x * sin + p_dir.y * cos,
+        );
+
+        self.dir = new_dir;
     }
 
     pub fn move_forward(&mut self){
 
-        let new_x = self.x + self.rad.cos() * self.move_speed;
-        let new_y =   self.y + self.rad.sin() * self.move_speed;
+        let new_pos = self.pos + self.dir * self.move_speed;
 
-        let tile_x = (new_x / 64.0) as usize;
-        let tile_y = (new_y / 64.0) as usize;
-
-        if !Map::is_wall(tile_x, tile_y){
-            self.x = new_x;
-            self.y = new_y;
+        let tile_pos = vec2(new_pos.x / Map::TILE_SIZE, new_pos.y / Map::TILE_SIZE);
+       
+        if !Map::is_wall(tile_pos.x as usize, tile_pos.y as usize){
+            self.pos = new_pos;
         }
+
     }
 
     pub fn update(&mut self){
         if is_key_down(KeyCode::W) {self.move_forward();}
-        if is_key_down(KeyCode::A) {self.turn_left();}
-        if is_key_down(KeyCode::D) {self.turn_right();}
+        if is_key_down(KeyCode::A) {self.rotate(self.dir, self.turn_speed * -1.0);}
+        if is_key_down(KeyCode::D) {self.rotate(self.dir, self.turn_speed);}
     }
 
     pub fn draw_player(&self, radius: f32, color: Color) {
-        draw_circle(self.x as f32, self.y as f32, radius, color);
+        draw_circle(self.pos.x as f32, self.pos.y as f32, radius, color);
 
         let line_length: f32 = radius;
-        let x2: f32 = self.x as f32 + (self.rad as f32).cos() * line_length;
-        let y2: f32 = self.y as f32 + (self.rad as f32).sin() * line_length;
+        let x2: f32 = self.pos.x as f32 + self.dir.x * line_length;
+        let y2: f32 = self.pos.y as f32 + self.dir.y * line_length;
 
-        draw_line(self.x as f32, self.y as f32, x2, y2, 3.0, Color { r: (0.0), g: (0.0), b: (0.0), a: (255.0) });
+        draw_line(self.pos.x as f32, self.pos.y as f32, x2, y2, 3.0, Color { r: (0.0), g: (0.0), b: (0.0), a: (1.0) });
     }
 }
