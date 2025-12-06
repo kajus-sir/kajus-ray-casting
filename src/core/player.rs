@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 
+use crate::core::config;
 use crate::core::map::Map;
 pub struct Player{
     pub pos: Vec2,
@@ -16,8 +17,8 @@ impl Player{
             pos, 
             dir: vec2(1.0,0.0),
             fov: 60f32.to_radians(),
-            move_speed: 2.0,
-            turn_speed: 0.1,
+            move_speed: 1.0,
+            turn_speed: 0.05,
         }
     }
 
@@ -36,8 +37,7 @@ impl Player{
     pub fn move_forward(&mut self){
 
         let new_pos = self.pos + self.dir * self.move_speed;
-
-        let tile_pos = vec2(new_pos.x / Map::TILE_SIZE, new_pos.y / Map::TILE_SIZE);
+        let tile_pos = vec2(new_pos.x / config::TILE_SIZE, new_pos.y / config::TILE_SIZE);
        
         if !Map::is_wall(tile_pos.x as usize, tile_pos.y as usize){
             self.pos = new_pos;
